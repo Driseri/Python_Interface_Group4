@@ -11,13 +11,13 @@ path_fs_db = r"../Data/fs_db.csv"    #Путь к базе с id дисципл�
 path_sh_db = r"../Data/sh_db.csv"    #Путь к базе с id стипендий
 
 
-def base_main:
+def base_main():
     return pd.read_csv(path_main_db)
 
 
-def base_fs:
+def base_fs():
     return pd.read_csv(path_fs_db)
 
 
-def base_sh:
+def base_sh():
     return pd.read_csv(path_sh_db)
