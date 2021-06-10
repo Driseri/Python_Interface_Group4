@@ -3,12 +3,14 @@
 Главная функция
 
 """
+os.chdir(r'../Scripts/')
+sys.path.append(r'../')
 import pandas as pd
 import os
 import sys
+import library as lib
 
-os.chdir(r'../Scripts/')
-sys.path.append(r'../')
+
 
 def main_func():
     df = pd.read_csv('../Data/sh_db.csv')
