@@ -1,6 +1,11 @@
 import tkinter as tki
 import pandas as pd
 import numpy as np
+import os.path
+
+global mpf = None
+global fpf = None
+global spf = None
 
 def Start_window(root):
     def delete_elemets():
@@ -28,9 +33,12 @@ def Main_window(root):
 
 
 def Select_db(root):
-    def get_db():
-            pf = pd.read_csv(path_1.get())
-            print(pf)
+    def get_db_main():
+            mpf = pd.read_csv(path_1.get())
+    def get_db_fs():
+            fpf = pd.read_csv(path_2.get())
+    def get_db_sh():
+            spf = pd.read_csv(path_3.get())
     lbl1 = tki.Label(root, text="Введите путь к базе студентов", font=('Times', 20, 'italic'))
     lbl1.grid(column=1, row=0, pady = 10, padx = 25)
     path_1 = tki.Entry()
