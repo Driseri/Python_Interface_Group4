@@ -18,7 +18,6 @@ import Library as lib
 
 
 def main_func():
-    mass_elements = []
     root = tki.Tk()
     root.geometry('800x450')
     root.title("Работа с базой студентов")
