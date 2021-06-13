@@ -14,13 +14,13 @@ os.chdir(r'../Scripts/')
 sys.path.append(r'../')
 import Library as lib
 
-x = "800" #Ширина окна
-y = "550" #Высота окна
+common_x = "800" #Ширина окна
+common_y = "550" #Высота окна
 
 
 def main_func():
     root = tki.Tk()
-    root.geometry((x+'x'+y))
+    root.geometry((common_x+'x'+common_y))
     root.title("Работа с базой студентов")
     sw.Start_window(root)
     root.mainloop() # Запуск цикла обработки событий
