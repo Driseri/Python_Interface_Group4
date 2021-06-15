@@ -6,9 +6,12 @@ import sys
 sys.path.append(r'../')
 import Library as lib
 
-global mpf
-global fpf
-global spf
+mpf = 0
+fpf = 0
+spf = 0
+max_id_stud = -1
+max_id_fs = -1
+max_id_sh = -1
 
 def Start_window(root):
     def delete_elemets():
@@ -56,6 +59,9 @@ def Main_window(root):
 
 def select_editing_db(root):
 
+    def save():
+        pass
+
     def delete_elemets():
         for object_name in mass:
             object_name.grid_remove()
@@ -63,16 +69,45 @@ def select_editing_db(root):
     def deleting_db():
         pass
 
+    """Добавить проверку на пустые поля"""
     def add_db():
-        lbl1 = tki.Label(root, text="Введите данные нового студента", font=('Times', 20, 'italic'))
-        lbl1.grid(column = 1, row=)
-        mass = [lbl1]
+        global mpf
+        global fpf
+        global spf
+        name_label = tki.Label(root, text="ФИО студента:")
+        name_label.grid(column=0, row=3)
+        stud_name = tki.Entry(justify = "left")
+        stud_name.grid(column=1, row=3)
 
-    btn1 = tki.Button(root, text='Удаление из базы', font=('Colibry', 12, 'bold'), pady = 20,width = 25, height = 2, command=to_select)
+        grade_label = tki.Label(root, text="Выберите год обучения:")
+        grade_label.grid(column=0, row=4)
+        stud_grade = tki.Spinbox(root, from_=1, to=4)
+        stud_grade.grid(column=1, row=4)
+
+        fs_label = tki.Label(root, text="Выберите любимый предмет:")
+        fs_label.grid(column=2, row=3)
+        fs_list = tki.Listbox(width=50)
+        scroll.grid(column=2, row=4)
+        fs_list.grid(column=2, row=4)
+        for idx,row in fpf.iterrows():
+            fs_list.insert(0,row.name_fs)
+
+
+
+        add_student = tki.Button(root, text='Добавить студента', command = save)
+        add_student.grid(column=1, row=6)
+
+    def repl_db():
+        pass
+
+    btn1 = tki.Button(root, text='Удаление из базы', font=('Colibry', 12, 'bold'), command=deleting_db)
     btn1.grid(column=1, row=0)
-    btn2 = tki.Button(root, text='Добавление изменение', font=('Colibry', 12, 'bold'), pady = 20,width = 25, height = 2, command=to_editing)
+    btn2 = tki.Button(root, text='Добавление', font=('Colibry', 12, 'bold'), command=add_db)
     btn2.grid(column=2, row=0)
+    btn3 = tki.Button(root, text='Изменение', font=('Colibry', 12, 'bold'), command=repl_db)
+    btn3.grid(column=3, row=0)
     mass = []
+    mass_all = [btn1,btn2,btn3]
 
 
 
@@ -94,30 +129,58 @@ def Select_graf(root):
 """Надо добавить проверку существования
 добавить флаг для перехода на новое окно"""
 def Select_db(root):
+
+    def max_id(db,name_col,id_max):
+        for id in db[name_col]:
+            if (id > id_max):
+                id_max = id
+        return id_max
+
     def delete_elemets():
         for object_name in mass:
             object_name.grid_remove()
 
     def get_db_main():
+        global mpf
+        global max_id_stud
         mpf = pd.read_csv(path_1.get())
+        max_id_stud = max_id(mpf,'id',max_id_stud)
 
     def get_db_fs():
+        global fpf
+        global max_id_fs
         fpf = pd.read_csv(path_2.get())
+        max_id_fs = max_id(fpf,'id_fs',max_id_fs)
 
     def get_db_sh():
+        global spf
+        global max_id_sh
         spf = pd.read_csv(path_3.get())
+        max_id_sh = max_id(spf,'id_sh',max_id_sh)
 
     def com_db():
+        global mpf
+        global fpf
+        global spf
+        global max_id_stud
+        global max_id_fs
+        global max_id_sh
         mpf = lib.db.base_main()
         fpf = lib.db.base_fs()
         spf = lib.db.base_sh()
+        max_id_stud = max_id(mpf,'id',max_id_stud)
+        max_id_fs = max_id(fpf,'id_fs',max_id_fs)
+        max_id_sh = max_id(spf,'id_sh',max_id_sh)
         delete_elemets()
         Main_window(root)
 
     def next_to_main():
-        delete_elemets()
-        #Сюда вставить проверку наличия всех баз
-        Main_window(root)
+        global mpf
+        global fpf
+        global spf
+        if ((mpf !=0) and (fpf != 0) and (spf != 0)):
+            delete_elemets()
+            Main_window(root)
 
     lbl1 = tki.Label(root, text="Введите путь к базе студентов", font=('Times', 20, 'italic'))
     lbl1.grid(column=1, row=0, pady = 10, padx = 25)
