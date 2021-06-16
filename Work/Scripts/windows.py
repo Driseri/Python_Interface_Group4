@@ -104,26 +104,114 @@ def Main_window(root):
 
 def select_editing_db(root):
     global mass_all
-
+    global mpf
+    global fpf
+    global spf
     def delete_elemets():
         global mass
         for object_name in mass:
             object_name.grid_remove()
 
     def deleting_db():
+        global mass
+
+        def sort_by_id():
+            st_list.delete(*st_list.get_children())
+            select_db = mpf
+            if (stud_id.get() == "" or stud_id.get().isdigit()):
+                if (stud_id.get().isdigit()):
+                    select_db = mpf.loc[mpf["id"] == int(stud_id.get())]
+                sort_by_name(select_db)
+            else:
+                error_label.config(text = "ID введен некорректно!")
+
+        def sort_by_name(select_db):
+            if (stud_name.get()!= ""):
+                select_db = select_db.loc[select_db["name"] == stud_name.get()]
+                sort_by_grade(select_db)
+            else:
+                sort_by_grade(select_db)
+
+        def sort_by_grade(select_db):
+            if (stud_grade.get().isdigit() or  stud_grade.get() == ""):
+                if (stud_grade.get() != ""):
+                    select_db = select_db.loc[select_db["grade"] == int(stud_grade.get())]
+                for idx,row in select_db.iterrows():
+                    fs_name = fpf[fpf['id_fs'] == row['id_fs']].iloc[0]['name_fs']
+                    sh_name = spf[spf['id_sh'] == row['id_sh']].iloc[0]['shsh']
+                    st_list.insert("",tki.END, values=[row["id"],row["name"],row["grade"],fs_name,sh_name])
+            else:
+                error_label.config(text = "Год обучения введен некорректно!")
+
+        def del_el():
+            global mpf
+            if not st_list.selection():
+                return
+            selected_item = st_list.selection()[0]
+            values = st_list.item(selected_item, option="values")
+            mpf = mpf.loc[mpf["id"] != int(values[0])]
+            st_list.delete(*st_list.get_children())
+            error_label.config(text = "%s успешно удален\на"%(values[1]))
+
+        select_db = 0
         delete_elemets()
+        title_label = tki.Label(root, text="Выберите параметры:")
+        title_label.grid(column=0, row=2)
+
+        id_label = tki.Label(root, text="Id студента:")
+        id_label.grid(column=0, row=3)
+        stud_id = tki.Entry(justify = "left")
+        stud_id.grid(column=0, row=4)
+
+        name_label = tki.Label(root, text="ФИО студента:")
+        name_label.grid(column=0, row=5)
+        stud_name = tki.Entry(justify = "left")
+        stud_name.grid(column=0, row=6)
+
+        grade_label = tki.Label(root, text="Выберите год обучения:")
+        grade_label.grid(column=0, row=7)
+        stud_grade = tki.Entry(justify = "left")
+        stud_grade.grid(column=0, row=8)
+
+
+        columns = ("#1", "#2", "#3", "#4", "#5")
+        st_list = tki.ttk.Treeview(root,show="headings", columns=columns, selectmode='browse')
+        st_list.heading("#1", text="ID")
+        st_list.heading("#2", text="ФИО")
+        st_list.heading("#3", text="Год обучения")
+        st_list.heading("#4", text="Любимый предмет")
+        st_list.heading("#5", text="Стипендия")
+        st_list.grid(column=1, row=2)
+        ysb = tki.ttk.Scrollbar(root, orient=tki.VERTICAL, command=st_list.yview)
+        st_list.configure(yscroll=ysb.set)
+        ysb.grid(row=2, column=2, sticky=tki.N + tki.S)
+
+        delete_btn = tki.Button(root, text='Удалить', command = del_el)
+        delete_btn.grid(column=1, row=5)
+        error_label  = tki.Label(root, text="Оставьте поля пустыми, чтобы пройтись по всем")
+        error_label.grid(column=1, row=6)
+        btn1 = tki.Button(root, text='Поиск', command = sort_by_id)
+        btn1.grid(column=0, row=9)
+
+        #ppt = mpf.loc[mpf['name'] == "Darina Yaschenko"]
+    #    print(ppt)
+    #    print("-"*15)
+    #    ppt = ppt.loc[ppt['grade'] == 1]
+    #    print(ppt)
+
+        mass = [title_label,id_label,stud_id,name_label,stud_name,grade_label,stud_grade,st_list,ysb,error_label,btn1,delete_btn]
 
     def to_main():
         global mass_all
         global mass
-        print(mass)
-        print(mass_all)
         for object_name in mass:
             object_name.grid_remove()
         for object_name in mass_all:
             object_name.grid_remove()
         Main_window(root)
 
+    def save_db():
+        pass
 
     """Добавить проверку на пустые поля
     Добавить messagebox"""
@@ -222,6 +310,15 @@ def select_editing_db(root):
 
 """Сделать ссылки на функции """
 def Select_graf(root):
+    global mass
+
+    def delete_elemets():
+        for object_name in mass:
+            object_name.grid_remove()
+    def to_main():
+        delete_elemets()
+        Main_window(root)
+
     btn1 = tki.Button(root, text='Отчет 1')
     btn1.grid(column=1, row=0)
     btn2 = tki.Button(root, text='Отчет 2')
@@ -234,6 +331,10 @@ def Select_graf(root):
     btn5.grid(column=5, row=4)
     btn6 = tki.Button(root, text='Отчет 6')
     btn6.grid(column=6, row=5)
+
+    exit = tki.Button(root, text='В главное меню', command=to_main)
+    exit.grid(column=0, row=6)
+    mass = [btn1,btn2,btn3,btn4,btn5,btn6,exit]
 
 
 
