@@ -211,7 +211,31 @@ def select_editing_db(root):
         Main_window(root)
 
     def save_db():
-        pass
+        global mass
+        global mpf
+
+        def saving():
+            mpf.to_csv(path_1.get(),index=False)
+            error_label.config(text="База записана успешно")
+
+        def common_saving():
+            mpf.to_csv(r'../Data/main_db.csv',index=False)
+            error_label.config(text="База записана успешно")
+
+        delete_elemets()
+        label_path = tki.Label(root, text="Введите путь для сохранения базы студентов")
+        label_path.grid(column=0, row=2)
+        path_1 = tki.Entry()
+        path_1.grid(column=0, row=3)
+        btn_save = tki.Button(root, text='Нажмите чтобы внести', command = saving)
+        btn_save.grid(column=0, row=4)
+        btn_save_common = tki.Button(root, text='Сохранить в базовое место', command = common_saving)
+        btn_save_common.grid(column=0, row=5)
+        error_label = tki.Label(root, text="")
+        error_label.grid(column=0, row=6)
+
+        mass = [label_path,path_1,btn_save,btn_save_common]
+
 
     """Добавить проверку на пустые поля
     Добавить messagebox"""
@@ -284,19 +308,16 @@ def select_editing_db(root):
     def repl_db():
         delete_elemets()
 
-    btn1 = tki.Button(root, text='Удаление из базы', font=('Colibry', 12, 'bold'), command=deleting_db)
+    btn1 = tki.Button(root, text='Удаление из базы', command=deleting_db)
     btn1.grid(column=1, row=0)
-    btn2 = tki.Button(root, text='Добавление', font=('Colibry', 12, 'bold'), command=add_db)
+    btn2 = tki.Button(root, text='Добавление', command=add_db)
     btn2.grid(column=2, row=0)
-    btn3 = tki.Button(root, text='Изменение', font=('Colibry', 12, 'bold'), command=repl_db)
-    btn3.grid(column=3, row=0)
-    btn4 = tki.Button(root, text='Назад', font=('Colibry', 12, 'bold'), command=to_main)
+    btn4 = tki.Button(root, text='Назад', command=to_main)
     btn4.grid(column=4, row=0)
+    btn5 = tki.Button(root, text='Сохранить базу', command=save_db)
+    btn5.grid(column=5, row=0)
     mass = []
-    mass_all = [btn1,btn2,btn3,btn4]
-
-
-
+    mass_all = [btn1,btn2,btn4,btn5]
 
 
 
@@ -403,9 +424,10 @@ def Select_db(root):
         global mpf
         global fpf
         global spf
-        if ((mpf !=0) and (fpf != 0) and (spf != 0)):
+        if ((mpf.empty != True) and (fpf.empty != True) and (spf.empty != True)):
             delete_elemets()
             Main_window(root)
+
 
     lbl1 = tki.Label(root, text="Введите путь к базе студентов", font=('Times', 20, 'italic'))
     lbl1.grid(column=1, row=0, pady = 10, padx = 25)
