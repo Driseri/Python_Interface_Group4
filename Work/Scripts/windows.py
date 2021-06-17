@@ -332,30 +332,80 @@ def select_editing_db(root):
 """Сделать ссылки на функции """
 def Select_graf(root):
     global mass
+    global mpf
+    global fpf
+    global spf
 
     def delete_elemets():
         for object_name in mass:
             object_name.grid_remove()
+
     def to_main():
         delete_elemets()
         Main_window(root)
 
-    btn1 = tki.Button(root, text='Отчет 1')
+
+    def first_text():
+        delete_elemets()
+
+        def choose_col():
+            pass
+
+        btn_do = tki.Button(root,text="Поиск",command=choose_col)
+        btn_do.grid(column=0, row=5)
+
+    def second_text():
+        pass
+
+    def third_text():
+        pass
+
+    def first_graf():
+        pass
+
+    def second_graf():
+        pass
+
+    def third_graf():
+        pass
+
+    def fourth_graf():
+        pass
+
+    full_db = pd.DataFrame(columns=["id","name","grade","id_fs","name_fs",
+                                    "id_sh","shsh","value_shsh"])
+    print(full_db)
+    for idx,row in mpf.iterrows():
+        fs_name = fpf[fpf['id_fs'] == row['id_fs']].iloc[0]['name_fs']
+        sh_name = spf[spf['id_sh'] == row['id_sh']].iloc[0]['shsh']
+        val_count = spf[spf['id_sh'] == row['id_sh']].iloc[0]['value_shsh']
+
+        ns = pd.DataFrame([[row["id"],row["name"],row["grade"],row["id_fs"],
+                            fs_name,row["id_sh"],sh_name,val_count]],
+                            columns=["id","name","grade","id_fs","name_fs",
+                                     "id_sh","shsh","value_shsh"])
+        full_db = full_db.append(ns,ignore_index=True)
+
+    
+    btn1 = tki.Button(root, text='Отчет 1',command=first_text)
     btn1.grid(column=1, row=0)
-    btn2 = tki.Button(root, text='Отчет 2')
+    btn2 = tki.Button(root, text='Отчет 2',command=second_text)
     btn2.grid(column=2, row=1)
-    btn3 = tki.Button(root, text='Отчет 3')
+    btn3 = tki.Button(root, text='Отчет 3',command=third_text)
     btn3.grid(column=3, row=2)
-    btn4 = tki.Button(root, text='Отчет 4')
+    btn4 = tki.Button(root, text='Отчет 4',command=first_graf)
     btn4.grid(column=4, row=3)
-    btn5 = tki.Button(root, text='Отчет 5')
+    btn5 = tki.Button(root, text='Отчет 5',command=second_graf)
     btn5.grid(column=5, row=4)
-    btn6 = tki.Button(root, text='Отчет 6')
+    btn6 = tki.Button(root, text='Отчет 6',command=third_graf)
     btn6.grid(column=6, row=5)
+    btn7 = tki.Button(root, text='Отчет 7',command=fourth_graf)
+    btn7.grid(column=7, row=6)
+
 
     exit = tki.Button(root, text='В главное меню', command=to_main)
     exit.grid(column=0, row=6)
-    mass = [btn1,btn2,btn3,btn4,btn5,btn6,exit]
+    mass = [btn1,btn2,btn3,btn4,btn5,btn6,btn7,exit]
 
 
 

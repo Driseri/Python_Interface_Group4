@@ -4,8 +4,9 @@
 Сервисная библиотека
 Бригада 4 БИВ205
 """
-__all__ = ["db"]
+__all__ = ["db","reports"]
 
 
 
 from . import db
+from . import reports
