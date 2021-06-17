@@ -349,10 +349,74 @@ def Select_graf(root):
         delete_elemets()
 
         def choose_col():
-            pass
+            st_list.delete(*st_list.get_children())
 
+            bool_mass = [bolcb1.get(),bolcb2.get(),bolcb3.get(),bolcb4.get(),
+                         bolcb5.get(),bolcb6.get(),bolcb7.get()]
+
+            columns = ["name","grade","id_fs","name_fs",
+                       "id_sh","shsh","value_shsh"]
+
+            columns_names = ["Имя","Год обучения","ID предмета",
+            "Название предмета","ID степендии","Название степендии","сумма стипендии"]
+
+            columns_table = ("#1", "#2", "#3", "#4", "#5","#6","#7")
+            need_columns = ["id"]
+            need_columns_names = ["ID"]
+            for i in range(0,7):
+                if (bool_mass[i]):
+                    need_columns.append(columns[i])
+                    need_columns_names.append(columns_names[i])
+
+            need_columns_table = columns_table[:len(need_columns)]
+
+
+            st_list.config(columns=need_columns_table)
+            for i in range(len(need_columns)):
+                st_list.heading(need_columns_table[i],text=need_columns_names[i])
+
+
+            ysb = tki.ttk.Scrollbar(root, orient=tki.VERTICAL, command=st_list.yview)
+            st_list.configure(yscroll=ysb.set)
+            ysb.grid(row=5, column=2, sticky=tki.N + tki.S)
+            for idx,row in full_db.iterrows():
+                row_list = [row["name"],row["grade"],row["id_fs"],
+                            row["name_fs"],row["id_sh"],row["shsh"],row["value_shsh"]]
+                need_rows = [row["id"]]
+                for i in range(0,7):
+                    if (bool_mass[i]):
+                        need_rows.append(row_list[i])
+
+                st_list.insert("",tki.END, values=need_rows)
+
+
+        st_list = tki.ttk.Treeview(root,show="headings", selectmode='browse')
+        bolcb1 = tki.BooleanVar()
+        cb1 = tki.Checkbutton(root,text="Имя", variable=bolcb1)
+        bolcb2 = tki.BooleanVar()
+        cb2 = tki.Checkbutton(root,text="Год обучения", variable=bolcb2)
+        bolcb3 = tki.BooleanVar()
+        cb3 = tki.Checkbutton(root,text="ID предмета", variable=bolcb3)
+        bolcb4 = tki.BooleanVar()
+        cb4 = tki.Checkbutton(root,text="Название предмета", variable=bolcb4)
+        bolcb5 = tki.BooleanVar()
+        cb5 = tki.Checkbutton(root,text="ID степендии", variable=bolcb5)
+        bolcb6 = tki.BooleanVar()
+        cb6 = tki.Checkbutton(root,text="Название степендии", variable=bolcb6)
+        bolcb7 = tki.BooleanVar()
+        cb7 = tki.Checkbutton(root,text="сумма стипендии", variable=bolcb7)
+        cb1.grid(column=0, row=0)
+        cb2.grid(column=0, row=1)
+        cb3.grid(column=0, row=2)
+        cb4.grid(column=0, row=3)
+        cb5.grid(column=0, row=4)
+        cb6.grid(column=0, row=5)
+        cb7.grid(column=0, row=6)
+        st_list.grid(column=1, row=7)
         btn_do = tki.Button(root,text="Поиск",command=choose_col)
-        btn_do.grid(column=0, row=5)
+        btn_do.grid(column=0, row=7)
+
+
 
     def second_text():
         pass
@@ -372,21 +436,8 @@ def Select_graf(root):
     def fourth_graf():
         pass
 
-    full_db = pd.DataFrame(columns=["id","name","grade","id_fs","name_fs",
-                                    "id_sh","shsh","value_shsh"])
-    print(full_db)
-    for idx,row in mpf.iterrows():
-        fs_name = fpf[fpf['id_fs'] == row['id_fs']].iloc[0]['name_fs']
-        sh_name = spf[spf['id_sh'] == row['id_sh']].iloc[0]['shsh']
-        val_count = spf[spf['id_sh'] == row['id_sh']].iloc[0]['value_shsh']
 
-        ns = pd.DataFrame([[row["id"],row["name"],row["grade"],row["id_fs"],
-                            fs_name,row["id_sh"],sh_name,val_count]],
-                            columns=["id","name","grade","id_fs","name_fs",
-                                     "id_sh","shsh","value_shsh"])
-        full_db = full_db.append(ns,ignore_index=True)
-
-    
+    full_db = lib.reports.make_full_db(mpf, fpf, spf)
     btn1 = tki.Button(root, text='Отчет 1',command=first_text)
     btn1.grid(column=1, row=0)
     btn2 = tki.Button(root, text='Отчет 2',command=second_text)
