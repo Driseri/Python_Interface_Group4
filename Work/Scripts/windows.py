@@ -332,6 +332,7 @@ def select_editing_db(root):
 """Сделать ссылки на функции """
 def Select_graf(root):
     global mass
+    global mass_all
     global mpf
     global fpf
     global spf
@@ -340,13 +341,23 @@ def Select_graf(root):
         for object_name in mass:
             object_name.grid_remove()
 
+    def delete_all_elemets():
+        for object_name in mass_all:
+            object_name.grid_remove()
+
     def to_main():
         delete_elemets()
         Main_window(root)
 
 
     def first_text():
+        global mass
+        global mass_all
         delete_elemets()
+
+        def back_to_choose():
+            delete_all_elemets()
+            Select_graf(root)
 
         def choose_col():
             st_list.delete(*st_list.get_children())
@@ -376,9 +387,7 @@ def Select_graf(root):
                 st_list.heading(need_columns_table[i],text=need_columns_names[i])
 
 
-            ysb = tki.ttk.Scrollbar(root, orient=tki.VERTICAL, command=st_list.yview)
-            st_list.configure(yscroll=ysb.set)
-            ysb.grid(row=5, column=2, sticky=tki.N + tki.S)
+
             for idx,row in full_db.iterrows():
                 row_list = [row["name"],row["grade"],row["id_fs"],
                             row["name_fs"],row["id_sh"],row["shsh"],row["value_shsh"]]
@@ -391,6 +400,9 @@ def Select_graf(root):
 
 
         st_list = tki.ttk.Treeview(root,show="headings", selectmode='browse')
+        ysb = tki.ttk.Scrollbar(root, orient=tki.VERTICAL, command=st_list.yview)
+        st_list.configure(yscroll=ysb.set)
+        ysb.grid(row=7, column=2, sticky=tki.N + tki.S)
         bolcb1 = tki.BooleanVar()
         cb1 = tki.Checkbutton(root,text="Имя", variable=bolcb1)
         bolcb2 = tki.BooleanVar()
@@ -415,8 +427,9 @@ def Select_graf(root):
         st_list.grid(column=1, row=7)
         btn_do = tki.Button(root,text="Поиск",command=choose_col)
         btn_do.grid(column=0, row=7)
-
-
+        back_btn = tki.Button(root,text="Hазад",command=back_to_choose)
+        back_btn.grid(column=0, row=8)
+        mass_all = [st_list,cb1,cb2,cb3,cb4,cb5,cb6,cb7,btn_do,back_btn,ysb]
 
     def second_text():
         pass
@@ -436,7 +449,7 @@ def Select_graf(root):
     def fourth_graf():
         pass
 
-
+    delete_elemets()
     full_db = lib.reports.make_full_db(mpf, fpf, spf)
     btn1 = tki.Button(root, text='Отчет 1',command=first_text)
     btn1.grid(column=1, row=0)
