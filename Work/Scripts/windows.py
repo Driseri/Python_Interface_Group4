@@ -432,7 +432,35 @@ def Select_graf(root):
         mass_all = [st_list,cb1,cb2,cb3,cb4,cb5,cb6,cb7,btn_do,back_btn,ysb]
 
     def second_text():
-        pass
+        global mass
+        def back_to_choose():
+            delete_all_elemets()
+            Select_graf(root)
+
+        favor_sub = []
+        grade_count = [0,0,0,0]
+        sh_names = []
+
+        for idx,row in fpf.iterrows():
+            favor_sub.append(row["name_fs"])
+        for idx,row in spf.iterrows():
+            sh_names.append(row["shsh"])
+
+        sh_count = dict.fromkeys(sh_names)
+
+        for key,value in sh_count.items():
+            sh_count[key] = 0
+        for idx,row in full_db.iterrows():
+            grade_count[int(row["grade"])-1]+=1
+            sh_count[row["shsh"]]+=1
+
+        nl = pd.pivot_table(full_db,index=["grade","shsh"],values=["id_sh"],aggfunc=[len])
+        for inx,row in nl.iterrows():
+            print(inx)
+
+        back_btn = tki.Button(root,text="Hазад",command=back_to_choose)
+        back_btn.grid(column=0, row=3)
+
 
     def third_text():
         pass
@@ -538,7 +566,7 @@ def Select_db(root):
         global mpf
         global fpf
         global spf
-        if ((mpf.empty != True) and (fpf.empty != True) and (spf.empty != True)):
+        if ((mpf != 0) and (fpf != 0) and (spf != 0)):
             delete_elemets()
             Main_window(root)
 
