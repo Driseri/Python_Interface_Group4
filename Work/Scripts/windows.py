@@ -694,7 +694,28 @@ def Select_graf(root):
             Select_graf(root)
 
         def make_graf():
-            pass
+            plt.clf()
+            kind = choose_box.curselection()[0]
+
+            if (kind == 0):
+                nl = full_db["grade"]
+                plt.xticks([1,2,3,4], ["1 курс","2 курс","3 курс","4 курс"],
+                           rotation=10, fontsize=8)
+                plt.xlabel('Курс')
+                plt.ylabel('Количесвто студентов')
+                plt.hist(nl,bins = 16)
+
+            else:
+                nl = full_db["value_shsh"]
+                plt.xticks([0,3500,13000],
+                           ["Без стипендии","Повышенная","Президентская"],
+                           rotation=10, fontsize=8)
+                plt.xlabel('Курс')
+                plt.ylabel('Стипендия')
+                plt.hist(nl,bins = 16)
+            plt.savefig(r"../Graphics/second_hist.png")
+            fig.canvas.draw()
+
 
         delete_elemets()
         matplotlib.use('TkAgg')
@@ -704,7 +725,7 @@ def Select_graf(root):
         plot_widget.grid(row=1, column=1)
 
 
-        choose_parm = ["График курс\кол_студентов"]
+        choose_parm = ["График курс\кол_студентов","График курс\средняя стипендия"]
         choose_box = tki.Listbox(exportselection=False, width=25)
         choose_box.grid(row=1, column=0)
         for row in choose_parm:
@@ -732,6 +753,7 @@ def Select_graf(root):
                 plt.bar(x, height=hght)
                 plt.xticks(x, name_col,rotation=10, fontsize=8)
                 fig.canvas.draw()
+                plt.savefig(r"../Graphics/first_bar.png")
 
 
 
