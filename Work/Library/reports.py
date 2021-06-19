@@ -17,3 +17,13 @@ def make_full_db(mpf,fpf,spf):
                                      "id_sh","shsh","value_shsh"])
         full_db = full_db.append(ns,ignore_index=True)
     return (full_db)
+
+
+def pivot_table(index_a, values_a, db):
+
+    index_a = list(index_a)
+    values_a = list(values_a)
+
+    result = pd.pivot_table(db, index=index_a, values=values_a)
+
+    result.to_csv(r'..\Output\pivot table.txt')

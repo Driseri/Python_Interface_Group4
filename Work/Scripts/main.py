@@ -24,7 +24,7 @@ def main_func():
     root.title("Работа с базой студентов")
     sw.Start_window(root)
     root.mainloop() # Запуск цикла обработки событий
-
+    sys.exit()
 
 if (__name__ == "__main__"):
     main_func()

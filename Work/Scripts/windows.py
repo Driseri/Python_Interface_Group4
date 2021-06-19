@@ -3,6 +3,9 @@ import pandas as pd
 import numpy as np
 import os.path
 import sys
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
+import matplotlib
 sys.path.append(r'../')
 import Library as lib
 
@@ -331,6 +334,7 @@ def select_editing_db(root):
 
 """Сделать ссылки на функции """
 def Select_graf(root):
+    root.geometry("1200x800")
     global mass
     global mass_all
     global mpf
@@ -433,43 +437,352 @@ def Select_graf(root):
 
     def second_text():
         global mass
+        delete_elemets()
         def back_to_choose():
             delete_all_elemets()
             Select_graf(root)
 
-        favor_sub = []
-        grade_count = [0,0,0,0]
-        sh_names = []
-
-        for idx,row in fpf.iterrows():
-            favor_sub.append(row["name_fs"])
-        for idx,row in spf.iterrows():
-            sh_names.append(row["shsh"])
-
-        sh_count = dict.fromkeys(sh_names)
-
-        for key,value in sh_count.items():
-            sh_count[key] = 0
-        for idx,row in full_db.iterrows():
-            grade_count[int(row["grade"])-1]+=1
-            sh_count[row["shsh"]]+=1
 
         nl = pd.pivot_table(full_db,index=["grade","shsh"],values=["id_sh"],aggfunc=[len])
+
+        columns = ("#1", "#2", "#3")
+        st_list1 = tki.ttk.Treeview(root,show="headings", columns=columns, selectmode='browse')
+        st_list1.heading("#1", text="Год обучения")
+        st_list1.heading("#2", text="Вид стипендии")
+        st_list1.heading("#3", text="Количество имеющих")
+        st_list1.grid(column=1, row=0)
+        ysb1 = tki.ttk.Scrollbar(root, orient=tki.VERTICAL, command=st_list1.yview)
+        st_list1.configure(yscroll=ysb1.set)
+        ysb1.grid(row=0, column=2, sticky=tki.N + tki.S)
+
         for inx,row in nl.iterrows():
-            print(inx)
+            st_list1.insert("",tki.END, values=[inx[0],inx[1],row["len"]["id_sh"]])
+
+        ns = pd.pivot_table(full_db,index=["grade","name_fs"],values=["id_fs"],aggfunc=[len])
+
+        st_list2 = tki.ttk.Treeview(root,show="headings", columns=columns, selectmode='browse')
+        st_list2.heading("#1", text="Год обучения")
+        st_list2.heading("#2", text="Любимый предмет")
+        st_list2.heading("#3", text="Количество имеющих")
+        st_list2.grid(column=1, row=1)
+        ysb2 = tki.ttk.Scrollbar(root, orient=tki.VERTICAL, command=st_list2.yview)
+        st_list2.configure(yscroll=ysb2.set)
+        ysb2.grid(row=1, column=2, sticky=tki.N + tki.S)
+
+        for inx,row in ns.iterrows():
+            st_list2.insert("",tki.END, values=[inx[0],inx[1],row["len"]["id_fs"]])
+
 
         back_btn = tki.Button(root,text="Hазад",command=back_to_choose)
-        back_btn.grid(column=0, row=3)
-
+        back_btn.grid(column=0, row=0)
+        mass = [st_list1,ysb1,st_list2,ysb2,back_btn]
 
     def third_text():
-        pass
+        global mass
+        delete_elemets()
 
-    def first_graf():
-        pass
+        def choose_index():
+            attributes = np.array(["id", "name", "grade", "name_fs", "shsh"])
+            values = [check_brand_state.get(), check_model_state.get(), check_price_state.get(),
+            check_discount_state.get(), check_size_state.get()]
+            return attributes[values]
+
+        def choose_values():
+            attributes = np.array(["grade", "value_shsh","id_fs","id_sh"])
+            values = [check_price_values_state.get(), check_discount_values_state.get(),
+                      check_fs_values_state.get(), check_sh_values_state.get()]
+            return attributes[values]
+
+        def show_text_message():
+            tki.messagebox.showinfo("Готово", "Ваш отчет сохранен. Название файла — pivot table!")
+
+        def back():
+            delete_elemets()
+            Select_graf(root)
+
+        def ok():
+            index_attributes = choose_index()
+            values_attributes = choose_values()
+            lib.reports.pivot_table(index_attributes, values_attributes, full_db)
+            pivot_table_index_choose_label.destroy()
+            pivot_table_values_choose_label.destroy()
+            pivot_table_label.destroy()
+            first_check_button.destroy()
+            second_check_button.destroy()
+            third_check_button.destroy()
+            forth_check_button.destroy()
+            fifth_check_button.destroy()
+            third_check_values_button.destroy()
+            forth_check_values_button.destroy()
+            space_label.destroy()
+            pivot_table_index_button.destroy()
+            pivot_table_values_button.destroy()
+            fifth_check_values_button.destroy()
+            six_check_values_button.destroy()
+
+            back_button.destroy()
+            ok_button.destroy()
+            show_text_message()
+            Select_graf(root)
+
+        pivot_table_index_choose_label = tki.Label(
+        root,
+        text='Выберите индекс атрибуты: '
+        )
+
+        pivot_table_values_choose_label = tki.Label(
+        root,
+        text='Выберите значимые атрибуты: '
+        )
+
+        pivot_table_label = tki.Label(
+        root,
+        text='Сводная таблица'
+        )
+
+        check_brand_state = tki.BooleanVar()
+        check_brand_state.set(False)
+        first_check_button = tki.Checkbutton(
+        root,
+        text="ID студента",
+        padx=15,
+        pady=5,
+        var=check_brand_state
+        )
+        first_check_button.grid(column=1, row=2, sticky=tki.W)
+
+        check_model_state = tki.BooleanVar()
+        check_model_state.set(False)
+        second_check_button = tki.Checkbutton(
+        root,
+        text="Имя студента",
+        padx=15,
+        pady=5,
+        var=check_model_state
+        )
+        second_check_button.grid(column=1, row=3, sticky=tki.W)
+
+        check_price_state = tki.BooleanVar()
+        check_price_state.set(False)
+        third_check_button = tki.Checkbutton(
+        root,
+        text="Год обучения",
+
+        padx=15,
+        pady=5,
+        var=check_price_state
+        )
+        third_check_button.grid(column=1, row=4, sticky=tki.W)
+
+        check_discount_state = tki.BooleanVar()
+        check_discount_state.set(False)
+        forth_check_button = tki.Checkbutton(
+        root,
+        text="Любимый предмет",
+        padx=15,
+        pady=5,
+        var=check_discount_state
+        )
+        forth_check_button.grid(column=1, row=5, sticky=tki.W)
+
+        check_size_state = tki.BooleanVar()
+        check_size_state.set(False)
+        fifth_check_button = tki.Checkbutton(
+        root,
+        text="Стипендия",
+        padx=15,
+        pady=5,
+        var=check_size_state
+        )
+        fifth_check_button.grid(column=1, row=6, sticky=tki.W)
+
+        check_price_values_state = tki.BooleanVar()
+        check_price_values_state.set(False)
+        third_check_values_button = tki.Checkbutton(
+        root,
+        text="Год обучения",
+        padx=15,
+        pady=5,
+        var=check_price_values_state
+        )
+        third_check_values_button.grid(column=3, row=3, sticky=tki.W)
+
+        check_discount_values_state = tki.BooleanVar()
+        check_discount_values_state.set(False)
+        forth_check_values_button = tki.Checkbutton(
+        root,
+        text="Сумма стипендии",
+        padx=15,
+        pady=5,
+        var=check_discount_values_state
+        )
+        forth_check_values_button.grid(column=3, row=5, sticky=tki.W)
+
+
+        check_fs_values_state = tki.BooleanVar()
+        check_fs_values_state.set(False)
+        six_check_values_button = tki.Checkbutton(
+        root,
+        text="Любимый предмет",
+        padx=15,
+        pady=5,
+        var=check_fs_values_state
+        )
+        six_check_values_button.grid(column=3, row=7, sticky=tki.W)
+
+
+        check_sh_values_state = tki.BooleanVar()
+        check_sh_values_state.set(False)
+        fifth_check_values_button = tki.Checkbutton(
+        root,
+        text="Стипендия",
+        padx=15,
+        pady=5,
+        var=check_sh_values_state
+        )
+        fifth_check_values_button.grid(column=3, row=8, sticky=tki.W)
+
+        space_label = tki.Label(
+        root,
+        text=' ',
+        width=30
+        )
+
+        pivot_table_index_button = tki.Button(
+        root,
+        text='Выбрать',
+        command=choose_index()
+        )
+
+        pivot_table_values_button = tki.Button(
+        root,
+        text='Выбрать',
+        command=choose_values()
+        )
+
+        back_button = tki.Button(
+        root,
+        text='Назад',
+        width=5,
+        command=back
+        )
+
+        ok_button = tki.Button(
+        root,
+        text='Ок',
+        width=5,
+        command=ok
+        )
+
+        back_button.place(relx=.75, rely=.8)
+        ok_button.place(relx=.85, rely=.8)
+
+        pivot_table_label.grid(column=1, columnspan=3, row=0)
+        pivot_table_index_choose_label.grid(column=1, row=1)
+        pivot_table_values_choose_label.grid(column=3, row=1)
+        space_label.grid(column=2, rowspan=7, row=1)
+
+        pivot_table_index_button.grid(column=1, row=7)
+        pivot_table_values_button.grid(column=3, row=9)
+
 
     def second_graf():
-        pass
+        global mass
+
+        def back_to_choose():
+            delete_all_elemets()
+            Select_graf(root)
+
+        def make_graf():
+            pass
+
+        delete_elemets()
+        matplotlib.use('TkAgg')
+        fig = plt.figure(figsize = (9,6))
+        canvas = FigureCanvasTkAgg(fig, master=root)
+        plot_widget = canvas.get_tk_widget()
+        plot_widget.grid(row=1, column=1)
+
+
+        choose_parm = ["График курс\кол_студентов"]
+        choose_box = tki.Listbox(exportselection=False, width=25)
+        choose_box.grid(row=1, column=0)
+        for row in choose_parm:
+            choose_box.insert(tki.END,row)
+
+        btn_make = tki.Button(root,text="Построить график",command=make_graf)
+        btn_make.grid(row=2, column=0)
+
+        back_btn = tki.Button(root,text="Hазад",command=back_to_choose)
+        back_btn.grid(column=0, row=0)
+        mass = [plot_widget,back_btn,choose_box,btn_make]
+
+
+    def first_graf():
+        global mass
+
+        def back_to_choose():
+            delete_all_elemets()
+            Select_graf(root)
+
+        def update_graf():
+
+            def draw(lists):
+                plt.clf()
+                plt.bar(x, height=hght)
+                plt.xticks(x, name_col,rotation=10, fontsize=8)
+                fig.canvas.draw()
+
+
+
+            kind = choose_box.curselection()[0]
+            choose_parm = ["График по стипендиям","График по предметам" ]
+            if (kind == 0):
+                nl = pd.pivot_table(full_db,index=["shsh"],values=["id_sh"],aggfunc=[len])
+                hght=[]
+                name_col = []
+                for idx,row in nl.iterrows():
+                    name_col.append(idx)
+                    hght.append(int(row["len"]["id_sh"]))
+                x = [(x+10)  for x in range(len(name_col))]
+                draw(nl)
+                plt.xlabel('Вид стипендий')
+                plt.ylabel('Количесвто студентов')
+
+            else:
+                nl = pd.pivot_table(full_db,index=["name_fs"],values=["id_fs"],aggfunc=[len])
+                hght=[]
+                name_col = []
+                for idx,row in nl.iterrows():
+                    name_col.append(idx)
+                    hght.append(int(row["len"]["id_fs"]))
+
+                x = [(x+10)  for x in range(len(name_col))]
+                draw(nl)
+
+                plt.xlabel('Предметы')
+                plt.ylabel('Количесвто студентов')
+
+
+
+        delete_elemets()
+        matplotlib.use('TkAgg')
+        fig = plt.figure(figsize = (9,6))
+        canvas = FigureCanvasTkAgg(fig, master=root)
+        plot_widget = canvas.get_tk_widget()
+        plot_widget.grid(row=1, column=1)
+
+        choose_parm = ["График по стипендиям","График по предметам" ]
+        choose_box = tki.Listbox(exportselection=False, width=25)
+        for row in choose_parm:
+            choose_box.insert(tki.END,row)
+
+        btn_make = tki.Button(root,text="Построить график",command=update_graf)
+        btn_make.grid(row=1, column=0)
+        choose_box.grid(row=1, column=2)
+        back_btn = tki.Button(root,text="Hазад",command=back_to_choose)
+        back_btn.grid(column=0, row=0)
+        mass=[back_btn,plot_widget,choose_box,btn_make]
 
     def third_graf():
         pass
@@ -479,20 +792,20 @@ def Select_graf(root):
 
     delete_elemets()
     full_db = lib.reports.make_full_db(mpf, fpf, spf)
-    btn1 = tki.Button(root, text='Отчет 1',command=first_text)
+    btn1 = tki.Button(root, text='Простой текстовый отчет',command=first_text)
     btn1.grid(column=1, row=0)
-    btn2 = tki.Button(root, text='Отчет 2',command=second_text)
-    btn2.grid(column=2, row=1)
-    btn3 = tki.Button(root, text='Отчет 3',command=third_text)
-    btn3.grid(column=3, row=2)
-    btn4 = tki.Button(root, text='Отчет 4',command=first_graf)
-    btn4.grid(column=4, row=3)
-    btn5 = tki.Button(root, text='Отчет 5',command=second_graf)
-    btn5.grid(column=5, row=4)
-    btn6 = tki.Button(root, text='Отчет 6',command=third_graf)
-    btn6.grid(column=6, row=5)
-    btn7 = tki.Button(root, text='Отчет 7',command=fourth_graf)
-    btn7.grid(column=7, row=6)
+    btn2 = tki.Button(root, text='Общий ',command=second_text)
+    btn2.grid(column=1, row=1)
+    btn3 = tki.Button(root, text='Сводная таблица',command=third_text)
+    btn3.grid(column=1, row=2)
+    btn4 = tki.Button(root, text='Кластеризованная столбчатая диаграмма',command=first_graf)
+    btn4.grid(column=1, row=3)
+    btn5 = tki.Button(root, text='Категоризированная гистограмма',command=second_graf)
+    btn5.grid(column=1, row=4)
+    btn6 = tki.Button(root, text='Категоризированная диаграмма Бокса-Вискера',command=third_graf)
+    btn6.grid(column=1, row=5)
+    btn7 = tki.Button(root, text='Kатегоризированная диаграмма рассеивания',command=fourth_graf)
+    btn7.grid(column=1, row=6)
 
 
     exit = tki.Button(root, text='В главное меню', command=to_main)
@@ -517,7 +830,7 @@ def Select_graf(root):
 """Надо добавить проверку существования
 добавить флаг для перехода на новое окно"""
 def Select_db(root):
-
+    root.geometry("800x650")
     def max_id(db,name_col,id_max):
         for id in db[name_col]:
             if (id > id_max):
