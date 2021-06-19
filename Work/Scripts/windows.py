@@ -806,11 +806,59 @@ def Select_graf(root):
         back_btn.grid(column=0, row=0)
         mass=[back_btn,plot_widget,choose_box,btn_make]
 
-    def third_graf():
-        pass
 
     def fourth_graf():
-        pass
+        global mass
+
+        def back_to_choose():
+            delete_elemets()
+            Select_graf(root)
+
+        def update_graf():
+            kind = choose_box.curselection()[0]
+            if (kind == 0):
+                plt.scatter(full_db["id"].tolist(),full_db["value_shsh"].tolist())
+                plt.xlabel('Студенты')
+                plt.ylabel('Стиппендия')
+            else:
+                nl = pd.pivot_table(full_db,index=["grade","id_fs"],values=["name_fs"],aggfunc=[len])
+                x = []
+                y = []
+                vals = []
+                for idx,row in nl.iterrows():
+                    x.append(int(idx[0]))
+                    y.append(int(idx[1]))
+                    vals.append(25 * row["len"]["name_fs"])
+                y_names = ["Calculus","Physics","Algorithmization","Physical Education",
+                     "Chemistry", "Projects seminar"]
+                plt.xlabel('Курс')
+                plt.ylabel('Дисциплина')
+                plt.yticks([11,12,13,14,15,16],
+                           y_names,fontsize=8)
+                plt.scatter(x,y,s = vals)
+
+
+
+            fig.canvas.draw()
+            plt.savefig(r"../Graphics/forth_scatter.png")
+        delete_elemets()
+        matplotlib.use('TkAgg')
+        fig = plt.figure(figsize = (9,6))
+        canvas = FigureCanvasTkAgg(fig, master=root)
+        plot_widget = canvas.get_tk_widget()
+        plot_widget.grid(row=1, column=1)
+
+        choose_parm = ["студенты/стипендия","курс\предметы" ]
+        choose_box = tki.Listbox(exportselection=False, width=25)
+        for row in choose_parm:
+            choose_box.insert(tki.END,row)
+        choose_box.grid(row = 1, column=0)
+
+        btn_make = tki.Button(root,text="Построить график",command=update_graf)
+        btn_make.grid(row=0, column=1)
+        back_btn = tki.Button(root,text="Hазад",command=back_to_choose)
+        back_btn.grid(column=0, row=0)
+        mass = [plot_widget]
 
     delete_elemets()
     full_db = lib.reports.make_full_db(mpf, fpf, spf)
@@ -824,15 +872,13 @@ def Select_graf(root):
     btn4.grid(column=1, row=3)
     btn5 = tki.Button(root, text='Категоризированная гистограмма',command=second_graf)
     btn5.grid(column=1, row=4)
-    btn6 = tki.Button(root, text='Категоризированная диаграмма Бокса-Вискера',command=third_graf)
-    btn6.grid(column=1, row=5)
     btn7 = tki.Button(root, text='Kатегоризированная диаграмма рассеивания',command=fourth_graf)
-    btn7.grid(column=1, row=6)
+    btn7.grid(column=1, row=5)
 
 
     exit = tki.Button(root, text='В главное меню', command=to_main)
     exit.grid(column=0, row=6)
-    mass = [btn1,btn2,btn3,btn4,btn5,btn6,btn7,exit]
+    mass = [btn1,btn2,btn3,btn4,btn5,btn7,exit]
 
 
 
