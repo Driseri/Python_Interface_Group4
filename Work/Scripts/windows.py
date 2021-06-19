@@ -828,7 +828,7 @@ def Select_graf(root):
                 for idx,row in nl.iterrows():
                     x.append(int(idx[0]))
                     y.append(int(idx[1]))
-                    vals.append(25 * row["len"]["name_fs"])
+                    vals.append(40 * row["len"]["name_fs"])
                 y_names = ["Calculus","Physics","Algorithmization","Physical Education",
                      "Chemistry", "Projects seminar"]
                 plt.xlabel('Курс')
