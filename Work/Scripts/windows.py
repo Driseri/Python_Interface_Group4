@@ -240,8 +240,6 @@ def select_editing_db(root):
         mass = [label_path,path_1,btn_save,btn_save_common]
 
 
-    """Добавить проверку на пустые поля
-    Добавить messagebox"""
     def add_db():
 
         def save():
@@ -332,7 +330,6 @@ def select_editing_db(root):
 
 
 
-"""Сделать ссылки на функции """
 def Select_graf(root):
     root.geometry("1200x800")
     global mass
@@ -497,7 +494,24 @@ def Select_graf(root):
             tki.messagebox.showinfo("Готово", "Ваш отчет сохранен. Название файла — pivot table!")
 
         def back():
-            delete_elemets()
+            pivot_table_index_choose_label.destroy()
+            pivot_table_values_choose_label.destroy()
+            pivot_table_label.destroy()
+            first_check_button.destroy()
+            second_check_button.destroy()
+            third_check_button.destroy()
+            forth_check_button.destroy()
+            fifth_check_button.destroy()
+            third_check_values_button.destroy()
+            forth_check_values_button.destroy()
+            space_label.destroy()
+            pivot_table_index_button.destroy()
+            pivot_table_values_button.destroy()
+            fifth_check_values_button.destroy()
+            six_check_values_button.destroy()
+
+            back_button.destroy()
+            ok_button.destroy()
             Select_graf(root)
 
         def ok():
@@ -605,7 +619,7 @@ def Select_graf(root):
         pady=5,
         var=check_price_values_state
         )
-        third_check_values_button.grid(column=3, row=3, sticky=tki.W)
+        third_check_values_button.grid(column=3, row=1, sticky=tki.W)
 
         check_discount_values_state = tki.BooleanVar()
         check_discount_values_state.set(False)
@@ -616,7 +630,7 @@ def Select_graf(root):
         pady=5,
         var=check_discount_values_state
         )
-        forth_check_values_button.grid(column=3, row=5, sticky=tki.W)
+        forth_check_values_button.grid(column=3, row=2, sticky=tki.W)
 
 
         check_fs_values_state = tki.BooleanVar()
@@ -628,7 +642,7 @@ def Select_graf(root):
         pady=5,
         var=check_fs_values_state
         )
-        six_check_values_button.grid(column=3, row=7, sticky=tki.W)
+        six_check_values_button.grid(column=3, row=3, sticky=tki.W)
 
 
         check_sh_values_state = tki.BooleanVar()
@@ -640,7 +654,7 @@ def Select_graf(root):
         pady=5,
         var=check_sh_values_state
         )
-        fifth_check_values_button.grid(column=3, row=8, sticky=tki.W)
+        fifth_check_values_button.grid(column=3, row=4, sticky=tki.W)
 
         space_label = tki.Label(
         root,
@@ -683,8 +697,9 @@ def Select_graf(root):
         space_label.grid(column=2, rowspan=7, row=1)
 
         pivot_table_index_button.grid(column=1, row=7)
-        pivot_table_values_button.grid(column=3, row=9)
+        pivot_table_values_button.grid(column=3, row=7)
 
+        mass = []
 
     def second_graf():
         global mass
