@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+Бригада 4 БИВ205
+Д. Ященко
+"""
 import matplotlib
 import pandas as pd
 

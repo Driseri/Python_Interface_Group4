@@ -21,7 +21,16 @@ mass_all = []
 
 
 def Start_window(root):
+    """
+    Функция открывает стартовое окно приложения
+    Дизайн - М. Колодин
+    Интерфейс - А. Шейнкин
+    """
     def delete_elemets():
+        """
+        Функция очистки окна приложения
+        Д. Ященко
+        """
         for object_name in mass:
             if object_name.winfo_viewable():
                 object_name.grid_remove()
@@ -50,28 +59,48 @@ def Start_window(root):
     mass = [lbl1, btn]
 
 
-"""Надо вставить command во все кнопки"""
 
 
 def Main_window(root):
+    """
+    функция вызовал главного меню приложения
+    Дизайн - М. Колодин
+    Интерфейс - А. Шейнкин
+    """
     root.geometry("1280x547")
     global mpf
     global fpf
     global spf
 
     def delete_elemets():
+        """
+        Функция очистки окна
+        Д.Ященко
+        """
         for object_name in mass:
             object_name.grid_remove()
 
     def to_graf():
+        """
+        Функция для открытия окна отчетов
+        Д. Ященко
+        """
         delete_elemets()
         Select_graf(root)
 
     def to_select():
+        """
+        Функция для вызова окна выбора входной базы
+        Д. Ященко
+        """
         delete_elemets()
         Select_db(root)
 
     def to_editing():
+        """
+        Функция для открытия окна изменения базы
+        Д.Ященко
+        """
         delete_elemets()
         select_editing_db(root)
 
@@ -151,20 +180,37 @@ def Main_window(root):
 
 
 def select_editing_db(root):
+    """
+    Функция создания окна изменения базы
+    М. Колодин
+    Интерфейс - А. Шейнкин
+    """
     global mass_all
     global mpf
     global fpf
     global spf
 
     def delete_elemets():
+        """
+        Функция для очищения окна
+        М. Колодин
+        """
         global mass
         for object_name in mass:
             object_name.grid_remove()
 
     def deleting_db():
+        """
+        Функция для удаления субъектов базы
+        М. Колодин
+        """
         global mass
 
         def sort_by_id():
+            """
+            Функция для отсеивания по id
+            М. Колодин
+            """
             st_list.delete(*st_list.get_children())
             select_db = mpf
             if (stud_id.get() == "" or stud_id.get().isdigit()):
@@ -175,6 +221,10 @@ def select_editing_db(root):
                 error_label.config(text="ID введен некорректно!")
 
         def sort_by_name(select_db):
+            """
+            Функция для отсеивания по имени
+            М. Колодин
+            """
             if (stud_name.get() != ""):
                 select_db = select_db.loc[select_db["name"] == stud_name.get()]
                 sort_by_grade(select_db)
@@ -182,6 +232,10 @@ def select_editing_db(root):
                 sort_by_grade(select_db)
 
         def sort_by_grade(select_db):
+            """
+            Функция для отсеивания по году обучения
+            М. Колодин
+            """
             if (stud_grade.get().isdigit() or stud_grade.get() == ""):
                 if (stud_grade.get() != ""):
                     select_db = select_db.loc[select_db["grade"] == int(
@@ -203,6 +257,10 @@ def select_editing_db(root):
                 error_label.config(text="Год обучения введен некорректно!")
 
         def del_el():
+            """
+            Функция для удаления изз базы субъекта
+            М. Колодин
+            """
             global mpf
             if not st_list.selection():
                 return
@@ -286,6 +344,10 @@ def select_editing_db(root):
             space_label77]
 
     def to_main():
+        """
+        Функция для возвращения к главному меню
+        Д. Ященко
+        """
         global mass_all
         global mass
         for object_name in mass:
@@ -295,14 +357,26 @@ def select_editing_db(root):
         Main_window(root)
 
     def save_db():
+        """
+        Функция для открытия окна сохранения базы
+        Д. Ященко
+        """
         global mass
         global mpf
 
         def saving():
+            """
+            Функция для выборочного сохрания базы
+            А. Шейнкин
+            """
             mpf.to_csv(path_1.get(), index=False)
             error_label.config(text="База записана успешно")
 
         def common_saving():
+            """
+            Функция для стандартного сохрания базы
+            А. Шейнкин
+            """
             mpf.to_csv(r'../Data/main_db.csv', index=False)
             error_label.config(text="База записана успешно")
 
@@ -340,11 +414,18 @@ def select_editing_db(root):
             space_label33,
             space_label44]
 
-    """Добавить проверку на пустые поля
-    Добавить messagebox"""
-    def add_db():
 
+    def add_db():
+        """
+        Функция для вызова окна дополнения базы
+        Дизайн - М. Колодин
+        Интерфейс - А. Шейнкин
+        """
         def save():
+            """
+            Функция для добавления нового субъекта в базу
+            Д. Ященко
+            """
             global mpf
             global fpf
             global spf
@@ -404,8 +485,6 @@ def select_editing_db(root):
         mass = [name_label, stud_name, grade_label, stud_grade, fs_label,
                 fs_list, sh_label, sh_list, add_student]
 
-    def repl_db():
-        delete_elemets()
 
     btn1 = tki.Button(root, text='Удаление из базы', command=deleting_db)
     btn1.grid(column=1, row=0, sticky='W')
@@ -419,10 +498,14 @@ def select_editing_db(root):
     mass_all = [btn1, btn2, btn4, btn5]
 
 
-"""Сделать ссылки на функции """
 
 
 def Select_graf(root):
+    """
+    Функция для создания окна выбора отчета
+    Дизайн - М. Колодин
+    Интерфейс - А. Шейнкин
+    """
     root.geometry("1200x800")
     global mass
     global mass_all
@@ -431,18 +514,36 @@ def Select_graf(root):
     global spf
 
     def delete_elemets():
+        """
+        Функция для очистки окна
+        А. Шейнкин
+        """
         for object_name in mass:
             object_name.grid_remove()
 
     def delete_all_elemets():
+        """
+        Функция для стандартного сохрания базы
+        А. Шейнкин
+        """
         for object_name in mass_all:
             object_name.grid_remove()
 
     def to_main():
+        """
+        Функция для возвращения к главному меню
+        А.Шейнкин
+        """
         delete_elemets()
         Main_window(root)
 
     def first_text():
+        """
+        Функция для открытия простого отчета
+        Д. Ященко
+        Дизайн - М. Колодин
+        Интерфейс - А. Шейнкин
+        """
         global mass
         global mass_all
         delete_elemets()
@@ -537,10 +638,20 @@ def Select_graf(root):
             ysb]
 
     def second_text():
+        """
+        Функция для открытия общего отчета
+        М. Колодин
+        Дизайн - М. Колодин
+        Интерфейс - А. Шейнкин
+        """
         global mass
         delete_elemets()
 
         def back_to_choose():
+            """
+            Функция для возвращения к меню выбора отчета
+            М. Колодин
+            """
             delete_all_elemets()
             Select_graf(root)
 
@@ -608,26 +719,48 @@ def Select_graf(root):
         mass = [st_list1, ysb1, st_list2, ysb2, back_btn]
 
     def third_text():
+        """
+        Функция для выбора сводной таблицы
+        А. Шейнкин
+        Дизайн - М. Колодин
+        Интерфейс - А. Шейнкин
+        """
         global mass
         delete_elemets()
 
         def choose_index():
+            """
+            Функция выбора индексов сводной таблицы
+            А. Шейнкин
+            """
             attributes = np.array(["id", "name", "grade", "name_fs", "shsh"])
             values = [check_brand_state.get(), check_model_state.get(), check_price_state.get(),
                       check_discount_state.get(), check_size_state.get()]
             return attributes[values]
 
         def choose_values():
+            """
+            Функция для выбора значений сводной таблицы
+            А. Шейнкин
+            """
             attributes = np.array(["grade", "value_shsh", "id_fs", "id_sh"])
             values = [check_price_values_state.get(), check_discount_values_state.get(),
                       check_fs_values_state.get(), check_sh_values_state.get()]
             return attributes[values]
 
         def show_text_message():
+            """
+            Функция для вывода сообщения
+            А. Шейнкин
+            """
             tki.messagebox.showinfo(
                 "Готово", "Ваш отчет сохранен. Название файла — pivot table!")
 
         def back():
+            """
+            Функция для возвращения в выбору отчета
+            А. Шейнкин
+            """
             pivot_table_index_choose_label.destroy()
             pivot_table_values_choose_label.destroy()
             pivot_table_label.destroy()
@@ -649,6 +782,10 @@ def Select_graf(root):
             Select_graf(root)
 
         def ok():
+            """
+            Функция для создания сводной таблицы
+            Д. Ященко
+            """
             index_attributes = choose_index()
             values_attributes = choose_values()
             lib.reports.pivot_table(
@@ -833,13 +970,27 @@ def Select_graf(root):
         pivot_table_values_button.grid(column=3, row=7)
 
     def second_graf():
+        """
+        Функция для открытия графика гистограммы
+        Дизайн - М. Колодин
+        Интерфейс - А. Щейнкин
+        М. Колодин
+        """
         global mass
 
         def back_to_choose():
+            """
+            Функция для возвращения к меню выбора отчета
+            М. Колодин
+            """
             delete_all_elemets()
             Select_graf(root)
 
         def make_graf():
+            """
+            Функция для создания графика
+            М. Колодин
+            """
             plt.clf()
             kind = choose_box.curselection()[0]
 
@@ -885,14 +1036,27 @@ def Select_graf(root):
         mass = [plot_widget, back_btn, choose_box, btn_make]
 
     def first_graf():
+        """
+        Функция для открытия столбчатой диаграммы
+        Дизайн - М. Колодин
+        Интерфейс - А. Щейнкин
+        Д. Ященко
+        """
         global mass
 
         def back_to_choose():
+            """
+            Функция для возвращения в меню выбора отчета
+            Д. Ященко
+            """
             delete_all_elemets()
             Select_graf(root)
 
         def update_graf():
-
+            """
+            Функция для построения столбчатой диаграммы
+            Д. Ященко
+            """
             def draw(lists):
                 plt.clf()
                 plt.bar(x, height=hght)
@@ -959,13 +1123,27 @@ def Select_graf(root):
         mass = [back_btn, plot_widget, choose_box, btn_make]
 
     def fourth_graf():
+        """
+        Функция для открытия диаграммы рассеивания
+        Дизайн - М. Колодин
+        Интерфейс - А. Щейнкин
+        Д. Ященко
+        """
         global mass
 
         def back_to_choose():
+            """
+            Функция для возвращения в меню выбора отчета
+            Д. Ященко
+            """
             delete_elemets()
             Select_graf(root)
 
         def update_graf():
+            """
+            Функция для построения графика рассеивания
+            Д. Ященко
+            """
             plt.clf()
             kind = choose_box.curselection()[0]
             if (kind == 0):
@@ -1063,42 +1241,69 @@ def Select_graf(root):
         exit]
 
 
-"""Надо добавить проверку существования
-добавить флаг для перехода на новое окно"""
 
 
 def Select_db(root):
+    """
+    Функция для открытия окна выбора входной базы
+    Дизайн - М. Колодин
+    Интерфейс - А. Щейнкин
+    """
     root.geometry("800x650")
 
     def max_id(db, name_col, id_max):
+        """
+        Функция для поиска максимального id
+        Д. Ященко
+        """
         for id in db[name_col]:
             if (id > id_max):
                 id_max = id
         return id_max
 
     def delete_elemets():
+        """
+        Функция для очистки окна
+        Д. Ященко
+        """
         for object_name in mass:
             object_name.grid_remove()
 
     def get_db_main():
+        """
+        Функция для импорта основной базы
+        Д. Ященко
+        """
         global mpf
         global max_id_stud
         mpf = pd.read_csv(path_1.get())
         max_id_stud = max_id(mpf, 'id', max_id_stud)
 
     def get_db_fs():
+        """
+        Функция для импорта базы предметов
+        Д. Ященко
+        """
         global fpf
         global max_id_fs
         fpf = pd.read_csv(path_2.get())
         max_id_fs = max_id(fpf, 'id_fs', max_id_fs)
 
     def get_db_sh():
+        """
+        Функция для импорта базы стипендий
+        Д. Ященко
+        """
         global spf
         global max_id_sh
         spf = pd.read_csv(path_3.get())
         max_id_sh = max_id(spf, 'id_sh', max_id_sh)
 
     def com_db():
+        """
+        Функция для импорта готовой базы
+        Д. Ященко
+        """
         global mpf
         global fpf
         global spf
@@ -1115,6 +1320,10 @@ def Select_db(root):
         Main_window(root)
 
     def next_to_main():
+        """
+        Функция для перехода в главное меню
+        Д. Ященко
+        """
         global mpf
         global fpf
         global spf
